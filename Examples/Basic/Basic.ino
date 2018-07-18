@@ -10,6 +10,10 @@
 #include "BC95Udp.h"
 #include "MicrogearNB.h"
 
+#define APPID    "{YOUR_APPID}"
+#define KEY      "{YOUR_KEY}"
+#define SECRET   "{YOUR_SECRET}"
+
 BC95UDP client;
 Microgear mg(&client);
 
@@ -30,37 +34,16 @@ void setup() {
         Serial.println("...");
         delay(1000);
     }
-    Serial.println(F("NB-IOT attached.."));
+    Serial.println(F("NB-IOT attached\n RSSI:"));
     Serial.println(BC95.getSignalStrength());
     Serial.println(BC95.getIPAddress());
 
-    mg.init("deerdev","T6Vwv04nxpXbWr4","3b3ROsQhw68lKeV5VT47V1Eoi");
+    mg.init(APPID, KEY, SECRET);
     mg.begin(5555);
 }
 
 void loop() {
-
-
-    int chk = DHT.read22(DHT22_PIN);
-    if (chk == DHTLIB_OK) {
-        dtostrf(DHT.temperature,0,1,payload);
-        strcat(payload,",");
-        dtostrf(DHT.humidity,0,1,payload+strlen(payload));
-        Serial.println(payload);
-        mg.publish("/nbsensor2",payload);
-
-//if (DHT.humidity > 65) mg.pushOwner("Hello from NB-IOT.");
-
-         if (millis() - lastfeed > 30000) {
-             strcpy(payload,"data=temp:");
-             dtostrf(DHT.temperature,0,1,payload+strlen(payload));
-             strcat(payload,",humid:");
-             dtostrf(DHT.humidity,0,1,payload+strlen(payload));
-             mg.writeFeed("nbiot",payload);
-             Serial.println(payload);
-             lastfeed =  millis();
-         }
-    }
+    mg.publish("/nbsensor2/rssi", BC95.getSignalStrength());
     mg.loop();
     delay(5000);
 }
