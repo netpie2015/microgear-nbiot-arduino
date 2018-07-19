@@ -8,7 +8,68 @@ Arduino : UNO, MEGA2560
 
 NB-IOT shield/module : True NB-IOT shield, AIS NB-IOT shield, Quectel BC95-B8
 
-## ตัวอย่างการใช้งาน
+## ฟังก์ชั่นการใช้งาน
+
+### include library และประกาศตัวแปร
+```C++
+#include "BC95Udp.h"
+#include "MicrogearNB.h"
+
+BC95UDP client;
+Microgear mg(&client);
+```
+
+### init และเปิดการทำงานของ microgear
+```C++
+mg.init(APPID, KEY, SECRET);
+mg.begin(LOCAL_PORT);
+```
+
+**ส่งข้อมูลเข้า topic**
+- mg.publish(char **topic*, char **payload*) 
+- mg.publish(char **topic*, int *value*) 
+
+```C++
+mg.publish("/home/temp","24.6");
+```
+
+**ส่งข้อมูลลง feed**
+- mg.writeFeed(char **feedid*, char **payload*) 
+- mg.writeFeed(char **feedid*, char **payload*,  char **apikey*) 
+
+วิธีการ authorize การเขียน feed มี 2 แบบ แบบแรกคือระบุ apikey ของ feed หรือแบบที่ 2 ไม่ระบุ apikey แต่ต้องให้สิทธิ์ appid ในการเขียน feed (ตั้งค่าในหน้า feed management บนเว็บ netpie.io)
+```C++
+mg.writeFeed("myfeed","temp:24.6,humid:62.8");
+```
+
+**push ข้อความหาเจ้าของ**
+- mg.pushOwner(char **text*) 
+```C++
+mg.pushOwner("สวัสดีจาก NB-IOT device");
+```
+**คำแนะนำ**
+1. ในฟังก์ชั่น loop() ของ arduino ควรมีการเรียก mg.loop() เป็นระยะๆ เพื่อตรวจสอบข้อมูลที่เข้ามาใน udp socket
+```C++
+mg.loop();
+```
+2. สามารถปรับแต่งค่า setting เบื้องต้นได้ในไฟล์ MicrogearNB.h
+```C++
+#define MICROGEARNB_USE_EXTERNAL_BUFFER     0
+#define DATA_BUFFER_SIZE                   128
+```
+DATA_BUFFER_SIZE คือขนาดของ memory ที่ MicrogearNB จะ allocate ให้สำหรับใช้เป็น buffer สำหรับพักข้อมูลที่เข้าและออกไปยัง socket หากต้องการ reuse memory buffer ในโค้ดโปรแกรม คุณสามารถส่งผ่านตัวแปรภายนอกเข้ามาให้ microgear ใช้เป็น buffer แทนที่จะให้ microgear allocate memory เองได้ ด้วยการเซต
+```C++
+#define MICROGEARNB_USE_EXTERNAL_BUFFER     1
+```
+และเรียกใช้ฟังก์ชั่น mg.setExternalBuffer(char *extbuff, size_t extbuffsize)
+```C++
+char data[100];
+mg.setExternalBuffer(data, 100);
+```
+
+
+
+## ตัวอย่างโค้ด
 
 ตัวอย่างการใช้งานกับ NETPIE ในขณะนี้รองรับการ publish, writefeed และส่ง push notification
 
