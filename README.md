@@ -119,7 +119,7 @@ void loop() {
 }
 ```
 
-library ชุดนี้ยังรองรับการรับส่งข้อมูลผ่านโปรโตคอล UDP ในมาตรฐานของ Arduino UDP class ตัวอย่างการส่ง UDP packet สำหรับ DNS query ไปยัง DNS server 8.8.8.8
+MicrogearNB library มาพร้อมกับ BC95UDP module ซึ่งถูก implement จาก UDP abstract class มาตรฐานของ Arduino จึงสามารถนำไปใช้งานร่วมกับ UDP library อื่นๆของ Arduino ได้ไม่ยาก ตัวอย่างการส่ง raw UDP data ไปยัง DNS server ของ Google ซึ่งมี IP address เป็น 8.8.8.8
 
 ```C++
 #include <Arduino.h>
@@ -128,7 +128,6 @@ library ชุดนี้ยังรองรับการรับส่ง
 
 AltSoftSerial bc95serial;
 
-// 8.8.8.8 is the Google's public DNS server.
 #define SERVER_IP     IPAddress(8, 8, 8, 8)
 #define SERVER_PORT   53
 
@@ -178,7 +177,13 @@ void loop() {
 
 ```
 
-library ชุดนี้มาพร้อม DNS class สำหรับการ resolve domain name ผ่าน NB-IOT
+นอกจากนี้ MicrogearNB library ยังมาพร้อมกับฟีเจอร์ DNS สำหรับการ resolve domain name ผ่าน NB-IOT ซึ่งเราสามารถใช้ hostname แทน IP address ใน API ได้เลย เช่น
+
+```C++
+udpclient.beginPacket("coap.server.com", 5683);  
+```
+
+แต่เพื่อเป็นการใช้ memory อย่างมีประสิทธิภาพ โดยเฉพาะกับบอร์ดที่มี memory น้อยเช่น UNO แนะนำให้ใช้วิธีข้างล่างนี้
 
 ```C++
 #include <Arduino.h>
