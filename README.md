@@ -69,9 +69,9 @@ mg.setExternalBuffer(data, 100);
 
 
 
-## ตัวอย่างโค้ด
+## ตัวอย่างโค้ดบน Arduino UNO
 
-ตัวอย่างการใช้งานกับ NETPIE ในขณะนี้รองรับการ publish, writefeed และส่ง push notification
+ตัวอย่างการใช้งานกับ NETPIE ในขณะนี้รองรับการ publish, writefeed และส่ง push notification ในโค้ดจะใช้ AltSoftSerial (เป็น library ที่ต้องติดตั้งแยก) ในการทำ software serial เพื่อสื่อสารกับ NB-IOT shield
 
 ```C++
 #include <Arduino.h>
