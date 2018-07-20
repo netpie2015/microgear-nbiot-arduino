@@ -22,20 +22,24 @@ char payload[32];
 void setup() {
     bc95serial.begin(9600);
     BC95.begin(bc95serial);
-
-    Serial.begin(9600);
-    Serial.println(F("Starting..."));
-
     BC95.reset();
+    
+    Serial.begin(9600);
+    Serial.println(F("Microgear Arduino NB-IoT Start!"));
+    Serial.print(F("IMEI: "));
     Serial.println(BC95.getIMEI());
+    Serial.print(F("IMSI: "));
     Serial.println(BC95.getIMSI());
 
+    Serial.print(F("Attach Network..."));
     while (!BC95.attachNetwork()) {
-        Serial.println("...");
+        Serial.print(".");
         delay(1000);
     }
-    Serial.println(F("NB-IOT attached\n RSSI:"));
+    Serial.println(F("\nNB-IOT attached!"));
+    Serial.print(F("RSSI: "));
     Serial.println(BC95.getSignalStrength());
+    Serial.print(F("IPAddress: "));
     Serial.println(BC95.getIPAddress());
 
     mg.init(APPID, KEY, SECRET);
@@ -43,7 +47,9 @@ void setup() {
 }
 
 void loop() {
-    mg.publish("/nbsensor2/rssi", BC95.getSignalStrength());
+    Serial.print(F("Sent Signal Strength: "));
+    Serial.println(BC95.getSignalStrength());
+    mg.publish("/nbiot/rssi", BC95.getSignalStrength());
     mg.loop();
     delay(5000);
 }
