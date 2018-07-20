@@ -67,7 +67,28 @@ char data[100];
 mg.setExternalBuffer(data, 100);
 ```
 
+3. เราสามารถตามเข้าไปปรับแต่งค่าในไฟล์​bc95udp/settings.h ได้อีกด้วย 
 
+```
+#define DATA_BUFFER_SIZE                128
+
+#define BC95_USE_EXTERNAL_BUFFER        1
+#define BC95_PRINT_DEBUG                0
+#define BC95_DEFAULT_SERIAL_TIMEOUT     500
+#define BC95_BUFFER_SIZE                DATA_BUFFER_SIZE
+
+#define BC95UDP_USE_EXTERNAL_BUFFER     1
+#define BC95UDP_SHARE_GLOBAL_BUFFER     1
+#define BC95UDP_SERIAL_READ_CHUNK_SIZE  7
+#define BC95UDP_BUFFER_SIZE             DATA_BUFFER_SIZE
+
+#define DNS_MAX_RETRY                   5
+#define DNS_DEFAULT_SERVER              IPAddress(8,8,8,8)
+
+#define NTP_DEFAULT_SERVER              "time.nist.gov"
+
+#define COAP_ENABLE_ACK_CALLBACK        0
+```
 
 ## ตัวอย่างโค้ดบน Arduino UNO
 
@@ -177,13 +198,13 @@ void loop() {
 
 ```
 
-นอกจากนี้ MicrogearNB library ยังมาพร้อมกับฟีเจอร์ DNS สำหรับการ resolve domain name ผ่าน NB-IOT ซึ่งเราสามารถใช้ hostname แทน IP address ใน API ได้เลย เช่น
+MicrogearNB library ยังมาพร้อมกับฟีเจอร์ DNS สำหรับการ resolve domain name อัตโนมัติผ่าน NB-IOT ซึ่งเราสามารถใช้ hostname แทน IP address ใน UDP API ได้เลย เช่น
 
 ```C++
 udpclient.beginPacket("coap.server.com", 5683);  
 ```
 
-แต่เพื่อเป็นการใช้ memory อย่างมีประสิทธิภาพ โดยเฉพาะกับบอร์ดที่มี memory น้อยเช่น UNO แนะนำให้ใช้วิธีข้างล่างนี้
+แต่เพื่อให้เกิดการใช้ memory อย่างมีประสิทธิภาพ ซึ่งสำคัญมากกับบอร์ดที่มี memory น้อยอย่างเช่น UNO จึงขอแนะนำให้ resolve IP ก่อนจึงค่อยนำไปใช้งาน แบบในโค้ดต่อไปนี้
 
 ```C++
 #include <Arduino.h>
@@ -210,7 +231,7 @@ void setup() {
     Serial.println(F("NB-IOT attached.."));
 
     dns.begin();
-    dns.getHostByName("gogole.com", remoteip);
+    dns.getHostByName("google.com", remoteip);
 
     Serial.print("The resolved IP address is : ");
     Serial.println(remoteip);
@@ -222,7 +243,7 @@ void loop() {
 
 ```
 
-และยังสามารถ NTP sync เวลากับ time server ผ่าน NB-IOT ได้อีกด้วย
+นอกจาก DNS และ CoAP แล้ว เรายังสามารถส่งโปรโตโคล NTP sync เวลากับ time server ผ่าน NB-IOT ได้อีกด้วย ตามตัวอย่างนี้
 
 ```C++
 #include <Arduino.h>
