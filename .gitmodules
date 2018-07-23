@@ -1,3 +1,0 @@
-[submodule "bc95udp"]
-	path = bc95udp
-	url = https://github.com/nexpie/bc95-arduino
