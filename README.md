@@ -39,7 +39,8 @@ mg.publish("/home/temp","24.6");
 
 วิธีการ authorize การเขียน feed มี 2 แบบ แบบแรกคือระบุ apikey ของ feed หรือแบบที่ 2 ไม่ระบุ apikey แต่ต้องให้สิทธิ์ appid ในการเขียน feed (ตั้งค่าในหน้า feed management บนเว็บ netpie.io)
 ```C++
-mg.writeFeed("myfeed","temp:24.6,humid:62.8");
+mg.writeFeed("myfeed","data=temp:24.6,humid:62.8"); // Required Feed Appid Permission
+mg.writeFeed("myfeed","data=temp:24.6,humid:62.8", "1ZzsZ3qqoHqeLxaugBh33bokvXKsJGfo"); // Use Feed API key
 ```
 
 **push ข้อความหาเจ้าของ**
