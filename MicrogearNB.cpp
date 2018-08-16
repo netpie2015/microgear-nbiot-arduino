@@ -81,20 +81,33 @@ void Microgear::chat(char *alias, char *payload) {
 }
 
 void Microgear::writeFeed(char *feedid, char *payload) {
+    char *p;
+
     strcpy_P(buffer, PSTR("feed/"));
     strcat(buffer, feedid);
     strcat_P(buffer, PSTR("?auth="));
     strcat(buffer, key);
     strcat(buffer, ":");
     strcat(buffer, secret);
-    coapSend(buffer, payload);
+
+    p = buffer + strlen(buffer) + 1;
+    strcpy_P(p, PSTR("data="));
+    strcat(p, payload);
+    coapSend(buffer, p);
 }
 
 void Microgear::writeFeed(char *feedid, char *payload, char* apikey) {
+    char *p;
+
     strcpy_P(buffer, PSTR("feed/"));
     strcat(buffer, feedid);
     strcat_P(buffer, PSTR("?apikey="));
     strcat(buffer, apikey);
+
+    p = buffer + strlen(buffer) + 1;
+    strcpy_P(p, PSTR("data="));
+    strcat(p, payload);
+
     coapSend(buffer, payload);
 }
 
