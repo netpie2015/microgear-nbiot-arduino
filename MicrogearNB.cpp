@@ -108,7 +108,7 @@ void Microgear::writeFeed(char *feedid, char *payload, char* apikey) {
     strcpy_P(p, PSTR("data="));
     strcat(p, payload);
 
-    coapSend(buffer, payload);
+    coapSend(buffer, p);
 }
 
 void Microgear::pushOwner(char *text) {
